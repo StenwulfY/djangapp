@@ -1,0 +1,35 @@
+<!-- 8 Display the question passed and the choices
+available -->
+ 
+<h1>{{question.question_text}}</h1>
+ 
+<!-- 8 Display error message -->
+{% if error_message %}
+<p><strong>{{error_message}}</strong></p>
+{% endif %}
+ 
+<!-- 8 Create a form which allows users to pick a choice -->
+<!-- Point at the vote function in polls/views.py using
+the namespace and pass the question id -->
+<form action="{% url 'polls:vote' question.id %}" method="post">
+ 
+<!-- 8 Protects your site from Cross Site Request Forgeries
+which occur when another site tries to target your form -->
+{% csrf_token %}
+ 
+<!-- 8 Cycle through all choices for this question and
+create a radio button for each -->
+{% for choice in question.choice_set.all %}
+ 
+    <!-- 8 When submitted the choice id is sent -->
+    <input type="radio" name="choice"
+           id="choice{{ forloop.counter }}"
+           value="{{ choice.id }}" />
+ 
+    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label>
+    <br>
+ 
+{% endfor %}
+ 
+<input type="submit" value="Vote" />
+</form>
