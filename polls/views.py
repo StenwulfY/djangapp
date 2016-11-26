@@ -12,40 +12,61 @@ from django.http import HttpResponseRedirect
 # 9 Used to return a url we can point to based on the
 # current question we are dealing with
 from django.core.urlresolvers import reverse
-
+# Generic view
+from django.views import generic
 # Create your views here.
 # 2 Each view is represented by a function
 # We'll create :
 # index : Display the latest questions
 # detail : Display the question and the choices
 # results : Display question results
-def index(request):
-    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+# def index(request):
+#     latest_question_list = Question.objects.order_by('-pub_date')[:5]
  
-    # 6 Define the name for the data to pass to the template
-    context = {
-        'latest_question_list': latest_question_list,
-    }
+#     # 6 Define the name for the data to pass to the template
+#     context = {
+#         'latest_question_list': latest_question_list,
+#     }
  
-    # 6 Render the page in the browser using the template
-    # and data required by the template
-    return render(request, 'polls/index.html', context)
+#     # 6 Render the page in the browser using the template
+#     # and data required by the template
+#     return render(request, 'polls/index.html', context)
+# Using generic view
+class IndexView(generic.ListView):
+    # point to the template
+    template_name = 'polls/index.html'
+    # question list
+    context_object_name = 'latest_question_list'
+
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return Question.objects.order_by('-pub_date')[:5]
 # a view represented by a function
 # results() to show voting results
-def results(request, question_id):
+# def results(request, question_id):
 
-    # 10 Get the question id passed or 404
-    question = get_object_or_404(Question, pk=question_id)
+#     # 10 Get the question id passed or 404
+#     question = get_object_or_404(Question, pk=question_id)
 
-    # 10 Render the template
-    return render(request, 'polls/results.html', {'question': question})
-
-def detail(request, question_id):
-    # 7 Check if the page exists, or display 404 page
-    question = get_object_or_404(Question, pk=question_id)
+#     # 10 Render the template
+#     return render(request, 'polls/results.html', {'question': question})
+#     Using generic view
+class ResultsView(generic.DetailView):
+    # define the model we're using
+    model = Question
+    # the template using 
+    template_name = 'polls/results.html'
+# def detail(request, question_id):
+#     # 7 Check if the page exists, or display 404 page
+#     question = get_object_or_404(Question, pk=question_id)
     
-    return render(request, 'polls/detail.html', {'question': question})
-
+#     return render(request, 'polls/detail.html', {'question': question})
+# Using generic viw
+class DetailView(generic.DetailView):
+    # define the model we're using
+    model = Question
+    # the template using 
+    template_name = 'polls/detail.html'
 # 9 Now we will update vote() to except the choice picked
 
 def vote(request, question_id):
