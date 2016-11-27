@@ -14,6 +14,9 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 # Generic view
 from django.views import generic
+
+from django.utils import timezone
+
 # Create your views here.
 # 2 Each view is represented by a function
 # We'll create :
@@ -40,7 +43,15 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
+        # return Question.objects.order_by('-pub_date')[:5]
+        """
+        Return the last five published questions (not including those set to be
+        published in the future).
+        """
+        return Question.objects.filter(
+            # __ : Question, lte: Less than or equal to
+            pub_date__lte=timezone.now()
+        ).order_by('-pub_date')[:5]
 # a view represented by a function
 # results() to show voting results
 # def results(request, question_id):
@@ -67,6 +78,11 @@ class DetailView(generic.DetailView):
     model = Question
     # define the template using 
     template_name = 'polls/detail.html'
+    def get_queryset(self):
+        """
+        Excludes any questions that aren't published yet.
+        """
+        return Question.objects.filter(pub_date__lte=timezone.now())
 # 9 Now we will update vote() to except the choice picked
 
 def vote(request, question_id):
