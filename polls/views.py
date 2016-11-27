@@ -31,11 +31,11 @@ from django.views import generic
 #     # 6 Render the page in the browser using the template
 #     # and data required by the template
 #     return render(request, 'polls/index.html', context)
-# Using generic view
+# Using generic view 
 class IndexView(generic.ListView):
-    # point to the template
+    # point to the template we're gonna use for this list
     template_name = 'polls/index.html'
-    # question list
+    # question list we're gonna user
     context_object_name = 'latest_question_list'
 
     def get_queryset(self):
@@ -54,7 +54,7 @@ class IndexView(generic.ListView):
 class ResultsView(generic.DetailView):
     # define the model we're using
     model = Question
-    # the template using 
+    # define the template using 
     template_name = 'polls/results.html'
 # def detail(request, question_id):
 #     # 7 Check if the page exists, or display 404 page
@@ -65,7 +65,7 @@ class ResultsView(generic.DetailView):
 class DetailView(generic.DetailView):
     # define the model we're using
     model = Question
-    # the template using 
+    # define the template using 
     template_name = 'polls/detail.html'
 # 9 Now we will update vote() to except the choice picked
 
